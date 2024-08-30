@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SASReport xmlns="http://www.sas.com/sasreportmodel/bird-4.42.0" label="Model Comparison Dashboard" features="promptModelV2" implicitInteractions="reportPrompt sectionPrompt sectionLink" createdLocale="en_US" createdVersion="4.42.0" dateCreated="2024-07-22T14:23:41Z" dateModified="2024-08-20T08:13:52Z" createdApplication="SAS Visual Analytics 2020" lastModifiedApplication="SAS Visual Analytics 2020" nextUniqueNameIndex="2465">
+	<DataDefinitions>
+		<ParentDataDefinition childQueryRelationship="independent" status="incomplete" name="dd16">
+			<DataDefinition type="multidimensional" name="dd17">
+				<MultidimensionalQuery detail="false">
+					<Axes>
+						<Axis type="column"/>
+						<Axis type="row"/>
+					</Axes>
+				</MultidimensionalQuery>
+				<ResultDefinitions>
+					<ResultDefinition purpose="primary" maxRowsLookup="timeSeries" maxRowsBehavior="noData" name="dd18"/>
+				</ResultDefinitions>
+			</DataDefinition>
+			<AppliedFilters/>
+		</ParentDataDefinition>
+		<ParentDataDefinition childQueryRelationship="independent" status="incomplete" name="dd31">
+			<DataDefinition type="procedural" name="dd32">
+				<ProceduralQuery type="standard">
+					<Arguments>
+						<ListArgument purpose="column"/>
+					</Arguments>
+				</ProceduralQuery>
+				<ResultDefinitions>
+					<ResultDefinition purpose="primary" maxRowsLookup="customContent" maxRowsBehavior="truncate" name="dd33"/>
+					<ResultDefinition purpose="formatted" maxRowsLookup="customContent" maxRowsBehavior="truncate" format="JSONX" name="dd34"/>
+				</ResultDefinitions>
+			</DataDefinition>
+			<AppliedFilters/>
+		</ParentDataDefinition>
+		<ParentDataDefinition childQueryRelationship="independent" status="incomplete" name="dd62">
+			<DataDefinition type="relational" name="dd63">
+				<RelationalQuery detail="false">
+					<Axes>
+						<Axis type="column"/>
+					</Axes>
+				</RelationalQuery>
+				<ResultDefinitions>
+					<ResultDefinition purpose="primary" maxRowsLookup="dropdown" maxRowsBehavior="truncate" name="dd64"/>
+				</ResultDefinitions>
+			</DataDefinition>
+			<AppliedFilters ignoreDataSourceFilters="false"/>
+		</ParentDataDefinition>
+		<ParentDataDefinition childQueryRelationship="independent" status="incomplete" name="dd570">
+			<DataDefinition type="relational" name="dd571">
+				<RelationalQuery detail="false">
+					<Axes>
+						<Axis type="column"/>
+					</Axes>
+				</RelationalQuery>
+				<ResultDefinitions>
+					<ResultDefinition purpose="primary" maxRowsLookup="list" maxRowsBehavior="truncate" name="dd572"/>
+				</ResultDefinitions>
+			</DataDefinition>
+			<AppliedFilters ignoreDataSourceFilters="false"/>
+		</ParentDataDefinition>
+	</DataDefinitions>
+	<VisualElements>
+		<Graph graphType="timeSeries" supplementalVisuals="ve20" resultDefinitions="dd18" refresh="fixed" refreshRate="10" name="ve15" data="dd16" label="Time 1" applyDynamicBrushes="yes">
+			<EditorProperties>
+				<Property key="isAutoLabel">true</Property>
+				<Property key="timeSeriesBinOption">formatBin</Property>
+				<Property key="timeSeriesFixedBinCardinality">300</Property>
+			</EditorProperties>
+			<Title auto="true"><P><DynamicSpan key="bird.autotitle.template.oneByTwo.fmt.txt"><Substitutions><Substitution key="bird.autotitle.measure.txt"/><Substitution key="bird.autotitle.timeAxis.txt"/></Substitutions></DynamicSpan></P></Title>
+<![CDATA[<StatGraph border="false" opaque="false" includeMissingDiscrete="true" selectionMode="multiple" missingValueDisplay="autolabel" displayOptionPolicy="union">
+    <PadAttrs top="0px" bottom="0px" left="0px" right="0px"/>
+    <Meta>
+        <DynVars>
+            <DynVar name="TIME" description="TIME_VAR" required="true" assignedType="time" type="time"/>
+            <DynVar name="RESPONSE" description="RESPONSE_VAR" required="true" assignedType="numeric" type="numeric" multiplesAllowed="true"/>
+            <DynVar name="GROUP" description="SUBGROUP_VAR" required="false" assignedType="character" type="character"/>
+            <DynVar name="TIP" description="TIP_VAR" required="false" assignedType="character" type="any" multiplesAllowed="true">
+                <DefaultValues>
+                </DefaultValues>
+            </DynVar>
+            <DynVar name="HIDDEN" description="HIDDEN_VAR" required="false" type="character" multiplesAllowed="true"/>
+        </DynVars>
+        <DataNameMap>
+            <Entry model="LayoutDataMatrix" data="dd18"/>
+        </DataNameMap>
+    </Meta>
+    <LayoutDataMatrix name="LayoutDataMatrix" cellHeightMin="1px" cellWidthMin="1px" includeMissingClass="true">
+        <LayoutPrototypeOverlay2D>
+            <TimeSeriesPlot name="TimeSeriesPlot" tipListPolicy="replace" _stmt="timeseriesplot" compactLabelFormats="true" primary="true" break="true" fadeType="auto" display="NOMARKERS NOFILL" tip="TIP" group="GROUP" time="TIME" responseVars="RESPONSE"/>
+            <XAxisOpts name="categoryAxis">
+                <DiscreteOpts tickValueAppearance="auto"/>
+                <TimeOpts splitTickValue="false" tickValueFormat="DATA"/>
+            </XAxisOpts>
+            <YAxisOpts reverse="false">
+                <LinearOpts>
+                    <TickValueFormatOpts extractScale="true"/>
+                </LinearOpts>
+            </YAxisOpts>
+        </LayoutPrototypeOverlay2D>
+    </LayoutDataMatrix>
+    <LayoutGlobalLegend legendTitlePosition="top" allowCollapsed="true">
+        <AutoLegend sortOrder="ascending">
+            <GraphNames>
+                <Value>TimeSeriesPlot</Value>
+            </GraphNames>
+        </AutoLegend>
+    </LayoutGlobalLegend>
+    <OverviewAxis maxPlotSize="60px" minPlotSize="35px" visible="off" axis="categoryAxis"/>
+</StatGraph>
+]]>
+		</Graph>
+		<Table columnSizing="autoFill" resultDefinitions="dd18" name="ve20" data="dd16" applyDynamicBrushes="yes"/>
+		<VisualContainer containerType="layout" name="ve28" label="Layout Container 1" selectionDisabled="true">
+			<EditorProperties>
+				<Property key="visualType">LAYOUT_CONTAINER</Property>
+			</EditorProperties>
+		</VisualContainer>
+		<WebContent url="https://your.host.name/SASJobExecution/?_program=/path/to/your/job" webContentType="webDataContent" supplementalVisuals="ve42" resultDefinitions="dd33 dd34" name="ve30" data="dd31" label="Data-driven content 1" applyDynamicBrushes="yes">
+			<EditorProperties>
+				<Property key="isAutoLabel">true</Property>
+			</EditorProperties>
+		</WebContent>
+		<Table columnSizing="autoFill" resultDefinitions="dd33" name="ve42" data="dd31" applyDynamicBrushes="yes"/>
+		<Prompt resultDefinitions="dd64" name="ve61" data="dd62" label="Drop-down list 1" selectionDisabled="true" applyDynamicBrushes="promptsOnly">
+			<EditorProperties>
+				<Property key="autoChartCategory">CONTROL</Property>
+				<Property key="isAutoLabel">true</Property>
+			</EditorProperties>
+			<ComboBox/>
+		</Prompt>
+		<VisualContainer containerType="layout" name="ve567" label="Layout Container 2" selectionDisabled="true">
+			<EditorProperties>
+				<Property key="visualType">LAYOUT_CONTAINER</Property>
+			</EditorProperties>
+		</VisualContainer>
+		<Prompt required="true" resultDefinitions="dd572" refresh="fixed" refreshRate="10" name="ve569" data="dd570" label="List 1" applyDynamicBrushes="promptsOnly">
+			<EditorProperties>
+				<Property key="autoChartCategory">CONTROL</Property>
+				<Property key="isAutoLabel">true</Property>
+			</EditorProperties>
+			<DefaultValue>
+				<String behavior="auto"></String>
+			</DefaultValue>
+			<CheckBoxList searchable="false" selectAllEnabled="false"/>
+		</Prompt>
+	</VisualElements>
+	<PromptDefinitions>
+		<PromptDefinition label="_job_cas_table" isParameter="true" dataType="string" multiValued="false" name="pr45">
+			<DefaultValue>
+				<String behavior="fixed">casuser.pricedata</String>
+			</DefaultValue>
+		</PromptDefinition>
+		<PromptDefinition label="_by_variable" isParameter="true" dataType="string" multiValued="false" name="pr66">
+			<DefaultValue>
+				<MissingValue value=" "/>
+			</DefaultValue>
+			<CurrentValueSource visualElement="ve61"/>
+		</PromptDefinition>
+		<PromptDefinition label="_end_historical_data" isParameter="true" format="DATE9" dataType="date" multiValued="false" name="pr564">
+			<DefaultValue>
+				<Date value="15705.0" dataType="date" behavior="fixed"/>
+			</DefaultValue>
+		</PromptDefinition>
+		<PromptDefinition label="_variable_name_parameter" isParameter="true" dataType="string" multiValued="true" name="pr1312">
+			<CurrentValueSource visualElement="ve569"/>
+		</PromptDefinition>
+		<PromptDefinition label="_target" isParameter="true" dataType="string" multiValued="false" name="pr2360">
+			<DefaultValue>
+				<String behavior="fixed">sale</String>
+			</DefaultValue>
+		</PromptDefinition>
+		<PromptDefinition label="_date" isParameter="true" dataType="string" multiValued="false" name="pr2361">
+			<DefaultValue>
+				<String behavior="fixed">date</String>
+			</DefaultValue>
+		</PromptDefinition>
+		<PromptDefinition label="_byvar" isParameter="true" dataType="string" multiValued="false" name="pr2362">
+			<DefaultValue>
+				<String behavior="fixed">regionname</String>
+			</DefaultValue>
+		</PromptDefinition>
+		<PromptDefinition label="_date_interval" isParameter="true" dataType="string" multiValued="false" name="pr2462">
+			<DefaultValue>
+				<String behavior="fixed">month</String>
+			</DefaultValue>
+		</PromptDefinition>
+	</PromptDefinitions>
+	<View>
+		<Header>
+			<MediaContainer target="mt2">
+				<ResponsiveLayout orientation="horizontal" overflow="fit">
+					<Weights mediaTarget="mt5" unit="percent">
+						<Weight value="100%"/>
+					</Weights>
+					<Weights mediaTarget="mt4" unit="percent">
+						<Weight value="100%"/>
+					</Weights>
+					<Weights mediaTarget="mt3" unit="percent">
+						<Weight value="100%"/>
+					</Weights>
+				</ResponsiveLayout>
+			</MediaContainer>
+		</Header>
+		<Section name="vi6" showSelectionControl="false" label="Page 1" autoInteractionMode="oneWayFilter">
+			<Header>
+				<MediaContainer target="mt2">
+					<ResponsiveLayout orientation="horizontal" overflow="fit">
+						<Weights mediaTarget="mt5" unit="percent">
+							<Weight value="100%"/>
+						</Weights>
+						<Weights mediaTarget="mt4" unit="percent">
+							<Weight value="100%"/>
+						</Weights>
+						<Weights mediaTarget="mt3" unit="percent">
+							<Weight value="100%"/>
+						</Weights>
+					</ResponsiveLayout>
+					<Visual ref="ve61" name="vi60">
+						<ResponsiveConstraint>
+							<WidthConstraint>
+								<Width mediaTarget="mt3" preferredSizeBehavior="honor" flexibility="fixed"/>
+							</WidthConstraint>
+							<HeightConstraint>
+								<Height mediaTarget="mt3" preferredSizeBehavior="honor" flexibility="fixed"/>
+							</HeightConstraint>
+						</ResponsiveConstraint>
+					</Visual>
+				</MediaContainer>
+			</Header>
+			<Body>
+				<MediaContainer target="mt2">
+					<ResponsiveLayout orientation="vertical" overflow="fit">
+						<Weights mediaTarget="mt5" unit="percent">
+							<Weight value="100%"/>
+						</Weights>
+						<Weights mediaTarget="mt4" unit="percent">
+							<Weight value="100%"/>
+						</Weights>
+						<Weights mediaTarget="mt3" unit="percent">
+							<Weight value="100%"/>
+						</Weights>
+					</ResponsiveLayout>
+					<Container ref="ve28" name="vi27">
+						<ResponsiveConstraint>
+							<WidthConstraint>
+								<Width mediaTarget="mt3" preferredSizeBehavior="honor" flexibility="flexible"/>
+							</WidthConstraint>
+							<HeightConstraint>
+								<Height mediaTarget="mt3" preferredSizeBehavior="honor" flexibility="flexible"/>
+							</HeightConstraint>
+						</ResponsiveConstraint>
+						<ResponsiveLayout orientation="vertical" overflow="grow"/>
+						<Container ref="ve567" name="vi566">
+							<ResponsiveConstraint>
+								<WidthConstraint>
+									<Width mediaTarget="mt3" preferredSizeBehavior="honor" flexibility="flexible"/>
+								</WidthConstraint>
+								<HeightConstraint>
+									<Height mediaTarget="mt3" preferredSizeBehavior="honor" flexibility="flexible"/>
+								</HeightConstraint>
+							</ResponsiveConstraint>
+							<ResponsiveLayout orientation="vertical" overflow="grow">
+								<Weights mediaTarget="mt5" unit="percent">
+									<Weight value="100%"/>
+								</Weights>
+								<Weights mediaTarget="mt4" unit="percent">
+									<Weight value="100%"/>
+								</Weights>
+								<Weights mediaTarget="mt3" unit="percent">
+									<Weight value="100%"/>
+								</Weights>
+							</ResponsiveLayout>
+							<Visual ref="ve15" name="vi14">
+								<ResponsiveConstraint>
+									<WidthConstraint>
+										<Width mediaTarget="mt3" preferredSizeBehavior="ignore" flexibility="flexible"/>
+									</WidthConstraint>
+									<HeightConstraint>
+										<Height mediaTarget="mt3" preferredSizeBehavior="ignore" flexibility="flexible"/>
+									</HeightConstraint>
+								</ResponsiveConstraint>
+							</Visual>
+							<Visual ref="ve569" name="vi568">
+								<ResponsiveConstraint>
+									<WidthConstraint>
+										<Width mediaTarget="mt3" preferredSizeBehavior="ignore" flexibility="flexible"/>
+									</WidthConstraint>
+									<HeightConstraint>
+										<Height mediaTarget="mt3" preferredSizeBehavior="ignore" value="5%" flexibility="flexible"/>
+									</HeightConstraint>
+								</ResponsiveConstraint>
+							</Visual>
+						</Container>
+						<Visual ref="ve30" name="vi29">
+							<ResponsiveConstraint>
+								<WidthConstraint>
+									<Width mediaTarget="mt3" preferredSizeBehavior="ignore" flexibility="flexible"/>
+								</WidthConstraint>
+								<HeightConstraint>
+									<Height mediaTarget="mt3" preferredSizeBehavior="ignore" flexibility="flexible"/>
+								</HeightConstraint>
+							</ResponsiveConstraint>
+						</Visual>
+					</Container>
+				</MediaContainer>
+			</Body>
+		</Section>
+	</View>
+	<Interactions>
+		<Interaction name="ia2463" type="parameter" dataStage="detail" derived="true">
+			<InteractionElementReference purpose="source" ref="ve61"/>
+			<InteractionElementReference purpose="target" variable="pr66"/>
+		</Interaction>
+		<Interaction name="ia2464" type="parameter" dataStage="detail" derived="true">
+			<InteractionElementReference purpose="source" ref="ve569"/>
+			<InteractionElementReference purpose="target" variable="pr1312"/>
+		</Interaction>
+	</Interactions>
+	<MediaSchemes>
+		<MediaScheme name="ms1">
+			<BaseStylesheetResource theme="opal"/>
+			<Stylesheet><![CDATA[]]></Stylesheet>
+		</MediaScheme>
+	</MediaSchemes>
+	<MediaTargets>
+		<MediaTarget windowSize="default" scheme="ms1" name="mt2"/>
+		<MediaTarget windowSize="small" scheme="ms1" name="mt3"/>
+		<MediaTarget windowSize="medium" scheme="ms1" name="mt4"/>
+		<MediaTarget windowSize="large" scheme="ms1" name="mt5"/>
+	</MediaTargets>
+	<ExportProperties>
+		<Export destination="pdf">
+			<Property key="showCoverPage" value="true"></Property>
+			<Property key="showPageNumbers" value="true"></Property>
+		</Export>
+	</ExportProperties>
+	<History>
+		<Versions>
+			<Version key="4.42.0" lastDate="2024-07-22T14:23:41Z"/>
+		</Versions>
+		<Editors>
+			<Editor applicationName="VA">
+				<Revision editorVersion="2024.06" lastDate="2024-08-01T16:49:05.138Z"/>
+				<Revision editorVersion="2024.07" lastDate="2024-08-20T08:13:54.612Z"/>
+			</Editor>
+		</Editors>
+	</History>
+	<SASReportState date="2024-08-19T14:51:47Z">
+		<VisualElements>
+			<PromptState element="ve61"/>
+		</VisualElements>
+		<View/>
+	</SASReportState>
+</SASReport>

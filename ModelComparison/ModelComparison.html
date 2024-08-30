@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Forecasting Model Comparison in VA Dashboard</title>
+	<script type="text/javascript" src="/SASJobExecution/?_file=<your.contentUtil.path>"></script>
+	<script type="text/javascript" src="/SASJobExecution/?_file=<your.messagingUtil.path>"></script>
+	
+	<style>
+		html,
+		body,
+		#jobResults {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+
+		#jobResults {
+			position: relative;
+			font-family: "Albany AMT";
+			font-size: 10pt;
+		}
+	</style>
+</head>
+<body>
+	<h2>Select a Model to Train</h2>
+    <form>
+        <button type="button" id="maButton" onclick="trainModel('ma')" disabled>Moving Average</button>
+        <button type="button" id="snaiveButton" onclick="trainModel('snaive')" disabled>Seasonal Naive</button>
+        <button type="button" id="esmButton" onclick="trainModel('esm')" disabled>ESM</button>
+        <button type="button" id="chronosButton" onclick="trainModel('chronos')" disabled>Chronos</button>
+    </form>
+	<div id="jobResults"></div>
+</body>
+
+<script>
+	"use strict";
+	
+	var _job_cas_table = null; 	// example: "casuser.pricedata"
+	var _by_variable = null; 	// its value is set by the Drop-down list associated with the BY variable
+	var _target = null;			// name of the dependent variable
+	var _date = null;			// name of the date variable
+	var _date_interval = null;	// frequency of the accumulated time series
+	var _byvar = null;			// name of the BY variable
+	let model = '';
+	
+	// Listening for HTML document completely loaded and parsed, best practice
+	document.addEventListener("DOMContentLoaded", function() {
+		console.log("Document loaded"); // Debugging
+		
+		// Set a callback function to handle messages received from VA
+		va.messagingUtil.setOnDataReceivedCallback(onDataReceived);
+	});
+
+	// Take action on received data
+	function onDataReceived(resultData) {
+		console.log("Data received", resultData); // Debugging
+		
+		if (resultData) {
+			var resultName = resultData.resultName;
+			var selections = va.contentUtil.initializeSelections(resultData); // good practice to remove eventual brush columns
+
+			if (resultData.columns.length == 0) {
+				// it needs at least one column and one row
+				document.getElementById("jobResults").innerHTML = "";
+				va.messagingUtil.postInstructionalMessage(resultName, "Please, assign roles");
+				return;
+			}
+			
+			function validateParameters(params) {
+				const requiredParams = ['_job_cas_table', '_by_variable', '_target', '_date', '_byvar', '_date_interval'];
+				for (const param of requiredParams) {
+					if (params[param] === undefined) {
+						return false;
+					}
+				}
+				return true;
+			}
+			
+			var vaParameters = va.contentUtil.getVAParameters(resultData);
+			console.log('parameters:', vaParameters); // Debugging
+			
+			if (!validateParameters(vaParameters)) {
+				// one or more parameters are missing
+				document.getElementById("jobResults").innerHTML = "";
+				va.messagingUtil.postInstructionalMessage(
+					resultName,
+					"Please, make sure the following parameters are being passed to this object:\n"+
+					"(1) _job_cas_table, containing the name of the CAS table to update\n"+
+					"(2) _by_variable, whose value is set by the Drop-down list associated with the BY variable\n"+
+					"(3) _target, containing the name of the dependent variable\n"+
+					"(4) _date, containing the name of the date variable\n"+
+					"(4) _date_interval, specifying the frequency of the accumulated time series\n"+
+					"(5) _byvar, containing the name of the BY variable"
+				);
+				return;
+			}
+			
+			_job_cas_table = vaParameters._job_cas_table;
+			_by_variable = vaParameters._by_variable;
+			_target = vaParameters._target;
+			_date = vaParameters._date;
+			_date_interval = vaParameters._date_interval;
+			_byvar = vaParameters._byvar;
+
+			// Enable the model buttons after data is received
+			const maDiv = document.getElementById('maButton');
+			const chronosDiv = document.getElementById('chronosButton');
+			const esmDiv = document.getElementById('esmButton');
+			const snaiveDiv = document.getElementById('snaiveButton');
+			maDiv.disabled = false;
+			chronosDiv.disabled = false;
+			esmDiv.disabled = false;
+			snaiveDiv.disabled = false;
+		}
+	}
+
+	async function trainModel(modelName) {
+		model = modelName;
+		document.getElementById("jobResults").innerHTML = "Waiting for job to finish...";
+
+		try {
+			const jobOutput = await callJob();
+			console.log("JOBOUTPUT=", jobOutput);
+			
+			if (!jobOutput.errorCode) {
+				// NOTE: jsonOutput in Viya 3.5 is an array: [{…}, {…}]. In Viya 4 it is an object that contains the array: {items: [{…}, {…}]} 
+				let hrefAppOut = jobOutput.items.filter((element, index, array) => element.name == "_appout.json")[0].href;
+				console.log("hrefAppOut=", hrefAppOut);
+				let jsonAppData = await obtainAppExecutionInfo(hrefAppOut, "json");
+				console.log("jsonAppData=", jsonAppData);
+
+				if (jsonAppData.success) {
+					document.getElementById("jobResults").innerHTML = "Done!";
+					setTimeout(() => {document.getElementById("jobResults").innerHTML = "";}, 2000);
+				}
+				else {
+					document.getElementById("jobResults").innerHTML = jsonAppData.message;
+				}
+			}
+			else {
+				document.getElementById("jobResults").innerHTML = "Job finished with ERROR (see console for details)";
+			}
+		}
+		catch {
+			document.getElementById("jobResults").innerHTML = "Error obtaining job output";
+		}
+	}
+
+	async function callJob() {
+		// Create form with input parameters
+		let formData = new FormData();
+		formData.append("_program", "$PROGRAM$");
+		formData.append("_action", "json");
+		formData.append("_resultfile", "*");
+		// HTML form parameters
+		formData.append("model", model);
+		// VA parameters
+		formData.append("castab", _job_cas_table);
+		formData.append("byVariable", _by_variable);
+		formData.append("target", _target);
+		formData.append("date", _date);
+		formData.append("date_interval", _date_interval);
+		formData.append("byvar", _byvar);
+
+		try {
+			const url = "/SASJobExecution/";
+
+			const requestHeaders = new Headers();
+			requestHeaders.append("Accept", "application/json");
+			requestHeaders.append("X-CSRF-TOKEN", "$CSRF$");
+
+			const requestOptions = {};
+			requestOptions.headers = requestHeaders;
+			requestOptions.method = "POST";
+			requestOptions.body = formData;
+			requestOptions.contentType = false; // do not send content-type
+			requestOptions.processData = false; // do not transform data to fit to the default content-type application/x-www-form-urlencoded
+			
+			console.log("Executing job...");
+			const response = await fetch(url, requestOptions);
+
+			if (!response.ok) {
+				const error = response.statusText;
+				throw new Error(error);
+			}
+
+			const jobOutput = await response.json();
+			console.log("JOBOUTPUT=", jobOutput);
+			if (!jobOutput.errorCode) {
+				console.log("Job executed with success!");
+			}
+			else {
+				// Documentation explaining errors returned from JSON requests:
+				// https://go.documentation.sas.com/doc/en/pgmsascdc/v_054/jobexecug/n0s75xgf3bcjy4n1mkq57yyd3cw4.htm
+				console.error("Job executed with ERROR");
+				console.error("jobOutput=", jobOutput);
+				let sasLog = await obtainSASLogLines(jobOutput.log + "/content");
+				console.log(sasLog);
+			}
+			return jobOutput;
+		}
+		catch (error) {
+			console.error("************** JOB FAILED ***************");
+			console.error(error);
+		}
+	}
+
+	// Processes the SAS log with extra attributes to extract only the log lines
+	async function obtainSASLogLines(uri) {
+		try {
+			const response = await fetch(uri);
+
+			if (!response.ok) {
+				const error = response.statusText;
+				throw new Error(error);
+			}
+
+			// read response stream as json
+			const jsonData = await response.json();
+
+			// the log is a json structure where each line has a different type, such as normal, title, source, note, warning, error, etc.
+			// {..., items: [{version:1,type:"source",line:"769  blah;"}, {version:...,type:...,line:...}], ...}
+			// types can be used to color code the log information
+			// the log itself is contained in the attribute called line
+
+			// we are only interested in the lines:
+			const sasLogLines = jsonData.items.map((element) => element.line);
+			const sasLog = sasLogLines.join('\r\n');
+			return sasLog;
+		}
+		catch (error) {
+			console.error("************** FAILED TO OBTAIN SAS LOG ***************");
+			console.error(error);
+			return "";
+		}
+	}
+	
+	async function obtainAppExecutionInfo(uri, type) {
+		try {
+			const response = await fetch(uri);
+
+			if (!response.ok) {
+				const error = response.statusText;
+				throw new Error(error);
+			}
+			// read response stream
+			let data;
+			if (type === "json") {
+				// json files
+				data = await response.json();
+			}
+			else if (type === "text") {
+				// text files, including html, xml, csv, etc.
+				data = await response.text();
+			}
+			else if (type === "blob") {
+				// images and other binary files
+				data = await response.blob();
+			}
+
+			return data;
+		}
+		catch (error) {
+			console.error("************** FAILED TO OBTAIN APP EXECUTION INFO ***************");
+			console.error(error);
+			return "";
+		}
+	}
+
+</script>
+</html>
